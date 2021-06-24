@@ -1,22 +1,23 @@
 const express = require('express');
+// kita load method dari route, ../ karena dari luar folder
+const {
+    getBootcamps, 
+    getBootcamp,    
+    createBootcamp,
+    updateBootcamp,
+    deleteBootcamp
+} = require('../controller/bootcamps');
 const router = express.Router();
 
+// dan beginilah cara kita panggil routenya lebih rapi
+router
+.route('/')
+.get(getBootcamps)      //get all
+.post(createBootcamp)   //buat baru
 
-//route 
-router.get('/', (req, res) => {
-    res.status(200).json({success: true, msg: 'Show all bootcamps'});
-})
-router.get('/:id', (req, res) => {
-    res.status(200).json({success: true, msg: `get single bootcamps ${req.params.id}`});
-})
-router.post('/', (req, res) => {
-    res.status(200).json({success: true, msg: 'Create new bootcamps'});
-})
-router.put('/:id', (req, res) => {
-    res.status(200).json({success: true, msg: `Update bootcamps ${req.params.id}`});
-})
-router.delete('/:id', (req, res) => {
-    res.status(200).json({success: true, msg: `Delete bootcamps ${req.params.id}`});
-})
+router.route('/:id')
+.get(getBootcamp)       //get single bootcamp
+.put(updateBootcamp)    // update bootcamp
+.delete(deleteBootcamp) // hapus bootcamp
 
-module.exports = router;
+module.exports = router; 
