@@ -6,7 +6,7 @@
 exports.getBootcamps = (req, res, next) =>{ //midleware function
     res
         .status(200)
-        .json({success: true, msg:'Show All Bootcamps'});
+        .json({success: true, msg:'Show All Bootcamps', hello:req.hello}); //sekaligus akses middleware logger
 }  
 // @desc    Get single bootcamps
 // @route   GET /api/v1/bootcamp/:id
