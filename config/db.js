@@ -8,7 +8,7 @@ const connectDB = async () => {
         useUnifiedTopology: true
     });
 
-    console.log(`Konek ke mongo ${conn.connection.host}`);
+    console.log(`Konek ke mongo ${conn.connection.host}`.cyan.bold.underline);
 
 };
 

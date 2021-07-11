@@ -1,3 +1,6 @@
+// kita load models
+const Bootcamp = require('../models/Bootcamp');
+
 // dalam controller = method
 // @desc    Get all bootcamps
 // @route   GET /api/v1/bootcamp
@@ -20,8 +23,15 @@ exports.getBootcamp = (req, res, next) =>{ //midleware function
 // @route   POST /api/v1/bootcamp
 // @access  Private after login
 
-exports.createBootcamp = (req, res, next) =>{ //midleware function
-    res.status(200).json({success: true, msg: 'Create new bootcamps'});
+exports.createBootcamp = async (req, res, next) =>{ //midleware function
+    const bootcamp = await Bootcamp.create(req.body);
+
+    res.status(201).json({
+        success: true,
+        data: bootcamp
+    });
+    // console.log(req.body);
+    // res.status(200).json({success: true, msg: 'Create new bootcamps'});
 }  
 
 // @desc    Update bootcamp

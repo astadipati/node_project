@@ -26,7 +26,7 @@
 		"careers": ["Web Development", "UI/UX", "Mobile Development"],
 		"housing": false,
 		"jobAssistance": true,
-		"jobGuarantee": false,
+		"jobGuarantee": false, 
 		"acceptGi": true
 	},
 	{
