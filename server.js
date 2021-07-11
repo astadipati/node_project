@@ -2,10 +2,16 @@ const express = require('express');
 const dotenv = require('dotenv');
 // morgan untuk logger pihak3
 const morgan = require('morgan');
-//load route file as middleware
-const bootcamps = require('./routes/bootcamps');
+// konek db
+const connectDB = require('./config/db');
 // load env Parameters
 dotenv.config({path:'./config/config.env'});
+
+// load konek to DB
+connectDB();
+
+//load route file as middleware
+const bootcamps = require('./routes/bootcamps');
 
 const app = express();
 
@@ -29,4 +35,14 @@ app.use('/api/v1/bootcamp',bootcamps);
 const MODE = process.env.NODE_ENV;
 const PORT = process.env.PORT;
 
-app.listen(PORT, console.log(`Server running in -${MODE}- mode on port ${PORT}`));
+const server = app.listen(
+    PORT,
+    console.log(`Server running in -${MODE}- mode on port ${PORT}`)
+);
+
+//handle unhandled promise rejections
+process.on('unhandledRejection', (err, promise) => {
+    console.log(`Error: ${err.message}`);
+    // close server & exit
+    server.close(()=> process.exit(1));
+});
