@@ -1,4 +1,7 @@
+// panggil helper
+// const ErrorResponse = require('../helper/errorResponse');
 // kita load models
+const ErrorResponse = require('../helper/errorResponse');
 const Bootcamp = require('../models/Bootcamp');
 
 // dalam controller = method
@@ -13,9 +16,10 @@ exports.getBootcamps = async (req, res, next) =>{ //midleware function
             .status(200)
             .json({success: true, jml: bootcamps.length, data: bootcamps}); //sekaligus akses middleware logger
     } catch (err) {
-        res
-            .status(400)
-            .json({success:false});
+        next(err);
+        // res
+        //     .status(400)
+        //     .json({success:false});
     }
 }; 
 // @desc    Get single bootcamps
@@ -29,16 +33,21 @@ exports.getBootcamp = async (req, res, next) =>{ //midleware function
         // jika sesuai format tapi tidak ada data
         if (!bootcamp) {
             // kita kembalikan dengan return
-            return res.status(400).json({success: false, msg: `Tidak ada data`});
-        }
+            // next(err);
+            return next(
+                // res.status(400).json({success: false, msg: `Tidak ada data`})
+                new ErrorResponse(`ID tidak ditemukan ${req.params.id}`, 404)
+            )
+        };
         res
             .status(200)
             .json({success: true, data: bootcamp});
     } catch (err) {
+        next(err);
         // res
         //     .status(400)
         //     .json({success:false});
-        next(err);
+        // next(new ErrorResponse(`Bootcamp nor found with id of ${req.params.id}`, 404));
     }
     // res.status(200).json({success: true, msg: `get single bootcamps ${req.params.id}`});
 };  
@@ -56,6 +65,7 @@ exports.createBootcamp = async (req, res, next) =>{ //midleware function
         });
         
     } catch (error) {
+        // next(err);
         res
         .status(400)
         .json({success:false, msg:`Cek duplikat`});
@@ -76,12 +86,17 @@ exports.updateBootcamp = async (req, res, next) =>{ //midleware function
         });
         res.status(200).json({success: true, msg: `Update bootcamps ${req.params.id}`, data: bootcamp});
         if (!bootcamp) {
-            return res.status(400).json({success: false, msg:`Gagal Update`});
+            // return res.status(400).json({success: false, msg:`Gagal Update`});
+            return next(
+                // res.status(400).json({success: false, msg: `Tidak ada data`})
+                new ErrorResponse(`ID tidak ditemukan ${req.params.id}`, 404)
+            )
         }
     } catch (error) {
-        res
-        .status(400)
-        .json({success:false, msg:`Gagal Melakukan Update ${req.params.id}`});
+        next(err);
+        // res
+        // .status(400)
+        // .json({success:false, msg:`Gagal Melakukan Update ${req.params.id}`});
     }
 };
 // @desc    Delete bootcamp
@@ -94,11 +109,16 @@ exports.deleteBootcamp =async (req, res, next) =>{ //midleware function
 
         res.status(200).json({success: true, msg: `Delete bootcamps ${req.params.id}`});
         if (!bootcamp) {
-            return res.status(400).json({success: false, msg:`Gagal Hapus Data`});
+            return next(
+                // res.status(400).json({success: false, msg: `Tidak ada data`})
+                new ErrorResponse(`ID tidak ditemukan ${req.params.id}`, 404)
+            )
+            // return res.status(400).json({success: false, msg:`Gagal Hapus Data`});
         }
-    } catch (error) {
-        res
-        .status(400)
-        .json({success:false, msg:`Gagal Menghapus Data ${req.params.id}`});
+    } catch (error) { 
+        next(err);
+        // res
+        // .status(400)
+        // .json({success:false, msg:`Gagal Menghapus Data ${req.params.id}`});
     }
 };  
