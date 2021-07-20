@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 // colors
 const colors = require('colors');
+// errorHandler dari middleware
+const errorHandler = require('./middleware/error');
 // konek db
 const connectDB = require('./config/db');
 // load env Parameters
@@ -36,6 +38,9 @@ if(process.env.NODE_ENV === 'development'){
 
 //mount router
 app.use('/api/v1/bootcamp',bootcamps);
+
+// pastikan error handler setelah mount router supaya terbaca bisa digunakan
+app.use(errorHandler);
 
 const MODE = process.env.NODE_ENV;
 const PORT = process.env.PORT;

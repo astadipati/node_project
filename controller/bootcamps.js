@@ -35,9 +35,10 @@ exports.getBootcamp = async (req, res, next) =>{ //midleware function
             .status(200)
             .json({success: true, data: bootcamp});
     } catch (err) {
-        res
-            .status(400)
-            .json({success:false});
+        // res
+        //     .status(400)
+        //     .json({success:false});
+        next(err);
     }
     // res.status(200).json({success: true, msg: `get single bootcamps ${req.params.id}`});
 };  
