@@ -64,11 +64,11 @@ exports.createBootcamp = async (req, res, next) =>{ //midleware function
             data: bootcamp
         });
         
-    } catch (error) {
-        // next(err);
-        res
-        .status(400)
-        .json({success:false, msg:`Cek duplikat`});
+    } catch (err) {
+        next(err);
+        // res
+        // .status(400)
+        // .json({success:false, msg:`Cek duplikat`});
     }
     // console.log(req.body);
     // res.status(200).json({success: true, msg: 'Create new bootcamps'});
