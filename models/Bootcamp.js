@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const BootcampSchema = new mongoose.Schema({
   name: {
@@ -11,7 +12,7 @@ const BootcampSchema = new mongoose.Schema({
   slug: String,
   description: {
     type: String,
-    required: [true, 'Please add a name'],
+    required: [true, 'Please add a description'],
     maxlength: [500, 'Gak boleh lebih dari 500 Charakter']
   },
   website: {
@@ -97,6 +98,13 @@ const BootcampSchema = new mongoose.Schema({
     default: Date.now
   }
 });
+// Create bootcamp slug from the name
+BootcampSchema.pre('save', function(next){ //jika error next not defined karena belum masuk dalam fungsi
+  // console.log('Slugify ran', this.name);
+  this.slug = slugify(this.name, {lower:true});
+  next();
+});
+
 //kita export dengan nama model Bootcamp dan passing BootcampSchema
 // dan ini bisa dipanggil di controller untuk fetch data
 module.exports = mongoose.model('Bootcamp', BootcampSchema);
