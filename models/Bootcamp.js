@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+// bring geocoder
+const geocoder = require('../helper/geoCoder');
 
 const BootcampSchema = new mongoose.Schema({
   name: {
@@ -104,6 +106,26 @@ BootcampSchema.pre('save', function(next){ //jika error next not defined karena 
   this.slug = slugify(this.name, {lower:true});
   next();
 });
+
+// kita buat middleware GEOCODE & create location field
+BootcampSchema.pre('save', async function(next){
+  const loc = await geocoder.geocode(this.address);
+  this.location={
+    type: 'Point',
+    coordinates: [loc[0].longitude, loc[0].latitude],
+    formattedAddress: loc[0].formattedAddress,
+    street: loc[0].streetName,
+    city: loc[0].city,
+    state: loc[0].stateCode,
+    zipcode: loc[0].zipcode,
+    country: loc[0].countryCode
+  }
+  // tapi kita tidak menyimpan address di db
+  this.address = undefined;
+  // dan kita panggil fungsi next
+  next();
+});
+
 
 //kita export dengan nama model Bootcamp dan passing BootcampSchema
 // dan ini bisa dipanggil di controller untuk fetch data
