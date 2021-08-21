@@ -15,8 +15,17 @@ const Bootcamp = require('../models/Bootcamp');
 // @access  Public
 
 exports.getBootcamps = asyncHandler(async (req, res, next) =>{ //midleware function
-    
-        const bootcamps = await Bootcamp.find();
+    // kita akan ambil data dan replace jadi $gt
+    let query;
+    let queryStr = JSON.stringify(req.query);
+
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+
+    // console.log(queryStr);
+    query = Bootcamp.find(JSON.parse(queryStr));
+
+    // const bootcamps = await Bootcamp.find(); berubah menunggu query
+    const bootcamps = await query;
         res
             .status(200)
             .json({success: true, jml: bootcamps.length, data: bootcamps}); //sekaligus akses middleware logger

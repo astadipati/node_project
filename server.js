@@ -22,12 +22,12 @@ const app = express();
 // pengganti bodyparser sudah include di express
 app.use(express.json());
 
-const logger = (req, res, next) => {
-    req.hello = 'Hello';
-    console.log('Ini Middleware'); //semenjak memiliki middleware ini bisa dipanggil di route
+// const logger = (req, res, next) => {
+//     req.hello = 'Hello';
+//     console.log('Ini Middleware'); //semenjak memiliki middleware ini bisa dipanggil di route
     // dan setiap midleware yang dibuat harus next
-    next();
-}
+//     next();
+// }
 
 // app.use(logger);
 // Dev logging middleware
