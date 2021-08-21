@@ -2,6 +2,8 @@
 // const ErrorResponse = require('../helper/errorResponse');
 // kita load models
 const ErrorResponse = require('../helper/errorResponse');
+// kita load geocoder
+const geocoder = require('../helper/geoCoder'); 
 // kita terapkan DRY Dont Repeat Yourself untuk error handling
 // middleware ini akan menggantikan try catch berulang
 const asyncHandler = require('../middleware/async');
@@ -97,6 +99,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) =>{ //midleware fun
         // .json({success:false, msg:`Gagal Melakukan Update ${req.params.id}`});
     // }
 });
+
 // @desc    Delete bootcamp
 // @route   DELETE /api/v1/bootcamp/:id
 // @access  private
@@ -118,4 +121,34 @@ exports.deleteBootcamp =asyncHandler(async (req, res, next) =>{ //midleware func
         // .status(400)
         // .json({success:false, msg:`Gagal Menghapus Data ${req.params.id}`});
     // }
+});  
+
+// @desc    Get Booctamps within a radius
+// @route   GET /api/v1/bootcamps/radius/:zipcode/:disctance
+// @access  private
+
+exports.getBootcampsInRadius =asyncHandler(async (req, res, next) =>{ //midleware function
+    const {zipcode, distance} = req.params;
+
+    // Get lat/lng from gwocoder
+    const loc =  await geocoder.geocode(zipcode);
+    const lat = loc[0].latitude;
+    const lng = loc[0].longitude;
+
+    // Calc radius using radians
+    // Divide dist by radius of Earth
+    // Earth Radius = 3.963 mi / 6.378 km
+    const radius = distance / 3963;
+
+    const bootcamps = await Bootcamp.find({
+        location: {
+            $geoWithin: {$centerSphere: [[lng, lat], radius]}
+        }
+    });
+
+    res.status(200).json({
+        success: true,
+        count: bootcamps.length,
+        data: bootcamp
+    });
 });  
