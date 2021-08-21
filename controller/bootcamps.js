@@ -124,13 +124,13 @@ exports.deleteBootcamp =asyncHandler(async (req, res, next) =>{ //midleware func
 });  
 
 // @desc    Get Booctamps within a radius
-// @route   GET /api/v1/bootcamps/radius/:zipcode/:disctance
+// @route   GET /api/v1/bootcamps/radius/:zipcode/:distance
 // @access  private
 
 exports.getBootcampsInRadius =asyncHandler(async (req, res, next) =>{ //midleware function
     const {zipcode, distance} = req.params;
 
-    // Get lat/lng from gwocoder
+    // Get lat/lng from geocoder
     const loc =  await geocoder.geocode(zipcode);
     const lat = loc[0].latitude;
     const lng = loc[0].longitude;
@@ -138,7 +138,9 @@ exports.getBootcampsInRadius =asyncHandler(async (req, res, next) =>{ //midlewar
     // Calc radius using radians
     // Divide dist by radius of Earth
     // Earth Radius = 3.963 mi / 6.378 km
-    const radius = distance / 3963;
+    const radius = distance / 3963; //in mile
+    // console.log(radius);
+    // process.exit;
 
     const bootcamps = await Bootcamp.find({
         location: {
@@ -149,6 +151,6 @@ exports.getBootcampsInRadius =asyncHandler(async (req, res, next) =>{ //midlewar
     res.status(200).json({
         success: true,
         count: bootcamps.length,
-        data: bootcamp
+        data: bootcamps
     });
 });  
